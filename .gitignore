@@ -1,0 +1,19 @@
+# macOS 噪声
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# 备份 / 运行时
+*.bak
+*.bak.*
+*.log
+*.pid
+backups/
+.hyperframes/
+
+# 编辑器
+.vscode/
+*.swp
+*~
+*.save

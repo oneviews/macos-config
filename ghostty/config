@@ -1,0 +1,134 @@
+# ============================================
+# Ghostty 终端配置 —— 唯一权威副本
+# 仓库: ghostty/config（install.sh 会链接到 ~/.config/ghostty/config）
+# 生效: ~/.config/ghostty/config（由 install.sh 建立的符号链接）
+# 重载: Cmd+Shift+,     全部选项: /Applications/Ghostty.app/Contents/MacOS/ghostty +show-config --default --docs
+# ============================================
+# 值均为 1.4.0 实测有效；注意三个易错点：
+#   1) 字体族名是 "Maple Mono NF CN"（写 ...Normal... 不存在，会静默回退）
+#   2) background-blur 是「模糊强度整数」（1.x 起不再是 background-blur-radius）
+#   3) 回滚缓冲用 scrollback-limit-bytes（旧 scrollback-limit 仍兼容但已改名）
+
+# --- 字体 ---
+# 字体族名是 "Maple Mono NF CN"；它的 Bold / Italic / Bold Italic 只是「同一族下的样式」，
+# 不是独立族名（实测 `Maple Mono NF CN Bold` 会被 CoreText 回退到 Helvetica）。
+# 因此选样式必须用 font-style（按字体自报的样式名查找），不能用 font-family-*。
+font-family = "Maple Mono NF CN"
+# 正文（regular）使用斜体面 —— 即整个终端默认斜体
+font-style = Italic
+font-style-bold = Bold Italic
+font-style-italic = Italic
+font-style-bold-italic = Bold Italic
+font-size = 16
+font-thicken = true
+# 连字：该字体 GSUB 只有 calt（无 liga/dlig），所以必须显式写 +calt
+font-feature = +calt
+# 单元格额外高度（像素）
+adjust-cell-height = 6
+
+# --- 主题与配色 ---
+# 明暗主题随 macOS 外观自动切换：light:/dark: 必须同时给出，缺一不生效
+# 备选配对：light:Apple System Colors Light,dark:Apple System Colors（最贴系统原生）
+#          light:Catppuccin Latte,dark:Catppuccin Mocha（同一色系）
+# 主题名查询：ghostty +list-themes
+theme = light:Catppuccin Latte,dark:0x96f
+window-theme = auto
+# 透明度混合方式（1.1.0+）：macOS 默认 native（按 Display P3 混合）。
+# linear-corrected 消除文字边缘发暗的瑕疵，又不像 linear 那样把深色字变细。
+alpha-blending = linear-corrected
+# 广色域（仅 macOS）：颜色按 Display P3 解释，P3 屏上更准
+window-colorspace = display-p3
+# 前后景最小对比度（WCAG，1~21）：1.1 足以避免主题里出现「黑底黑字」
+minimum-contrast = 1.1
+
+# --- 窗口 ---
+# 不透明度（1=完全不透明，越小越透）。⚠️ macOS 上改这一项必须「完全退出 Ghostty 再打开」，
+# Cmd+Shift+, 重载对它无效（官方文档明说：requires restarting Ghostty completely）。
+background-opacity = 0.80
+# 让「自己画背景色」的程序（neovim / tmux）也遵守上面这条透明度（1.2.0+）。
+# 默认 false 时它们重绘的背景是不透明的。
+background-opacity-cells = true
+# 模糊强度（整数；false=关闭、true=默认 20）
+# macOS 26+ 还可用 macos-glass-regular / macos-glass-clear（原生玻璃，本机 27.0.1 实测可接受）
+background-blur = 30
+macos-titlebar-style = transparent
+window-step-resize = false
+window-padding-x = 10
+window-padding-y = 10
+# 1.4.0+：四边 padding 均分（默认 false 会把多余空间留在底部，整体视觉偏上）
+window-padding-balance = equal
+# padding 区域延伸最近单元格底色（extend-always 绕过"主屏程序"的启发式判断）
+window-padding-color = extend-always
+window-save-state = always
+
+# --- 分屏 ---
+# 非焦点分屏的不透明度：1 = 完全不淡化；默认 0.7，这里稍收敛
+unfocused-split-opacity = 0.75
+# 分隔线颜色（Catppuccin Mocha surface1）
+split-divider-color = #45475a
+
+# --- 光标 ---
+cursor-style = bar
+cursor-style-blink = true
+cursor-opacity = 1
+# 光标用 cell-foreground（文字色）→ 浅底深光标 / 深底浅光标，永远高对比。
+# 不要指望 light:/dark: 前缀：1.4.0 里它只支持 theme，颜色键写 light:…,dark:… 会 invalid value。
+cursor-color = cell-foreground
+# adjust-* 系列是「在原值上增减」而不是绝对值：默认竖线约 1px，+2px → 约 3px。
+# 想更粗就加到 3~4，想回细线就删掉本行或写负数。
+adjust-cursor-thickness = 2
+
+# --- 鼠标 ---
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+
+# --- 下拉式快速终端（Quake 风格）---
+quick-terminal-position = top
+quick-terminal-screen = mouse
+quick-terminal-autohide = true
+quick-terminal-animation-duration = 0.15
+
+# --- 剪贴板安全 ---
+clipboard-paste-protection = true
+clipboard-paste-bracketed-safe = true
+
+# --- Shell 集成 ---
+shell-integration = detect
+
+# --- 性能 ---
+# 回滚缓冲 25MB
+scrollback-limit-bytes = 25000000
+
+# --- 键位 ---
+# 标签页
+keybind = cmd+t=new_tab
+keybind = cmd+shift+left=previous_tab
+keybind = cmd+shift+right=next_tab
+keybind = cmd+w=close_surface
+# 分屏
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+alt+left=goto_split:left
+keybind = cmd+alt+right=goto_split:right
+keybind = cmd+alt+up=goto_split:top
+keybind = cmd+alt+down=goto_split:bottom
+keybind = cmd+shift+e=equalize_splits
+keybind = cmd+shift+f=toggle_split_zoom
+# 字号
+keybind = cmd+plus=increase_font_size:1
+keybind = cmd+minus=decrease_font_size:1
+keybind = cmd+zero=reset_font_size
+# 快速终端全局热键（Carbon 注册，不需要辅助功能授权）
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
+# 重载配置
+keybind = cmd+shift+comma=reload_config
+
+# --- 自定义着色器（GLSL，Shadertoy 兼容）---
+# 光标拖尾（Neovide 风格）：https://github.com/sahaj-b/cursor-shaders（MIT，见 shaders/LICENSE.cursor-shaders）
+# ⚠️ 编译失败不会报配置错误，只进日志；写错可能整窗变黑 → 注释掉 custom-shader 即可恢复
+custom-shader = ~/.config/ghostty/shaders/cursor_warp.glsl
+# true = 只在聚焦的终端跑动画（官方量级 <10% CPU）；always = 全部窗口；false = 只在重绘时计算
+custom-shader-animation = true
+
+# --- 终端类型（老式远程主机/root 识别）---
+term = xterm-256color

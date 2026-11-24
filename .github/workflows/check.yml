@@ -1,0 +1,47 @@
+name: check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck jq zsh
+
+      - name: Secret / leak scan
+        run: ./scripts/secret-scan.sh .
+
+      - name: bash syntax
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            bash -n "$f" || fail=1
+          done < <(find . -name '*.sh' -not -path './.git/*' -print0)
+          exit $fail
+
+      - name: zsh syntax
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            zsh -n "$f" || fail=1
+          done < <(find . -name '*.zsh' -not -path './.git/*' -print0)
+          exit $fail
+
+      - name: shellcheck (errors only)
+        run: shellcheck -S error $(find . -name '*.sh' -not -path './.git/*')
+
+      - name: JSON valid
+        run: |
+          jq empty vscode/settings.json
+          jq empty karabiner/complex-modifications.json
+
+      - name: Python syntax
+        run: python3 -m py_compile ghostty/verify-config.py

@@ -1,0 +1,26 @@
+{
+    "workbench.startupEditor": "none",
+    "workbench.iconTheme": "vscode-icons",
+    "vsicons.dontShowNewVersionMessage": true,
+    "files.autoSave": "afterDelay",
+    "workbench.navigationControl.enabled": false,
+    "workbench.colorTheme": "Light 2026",
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredLightColorTheme": "Light 2026",
+    "workbench.preferredDarkColorTheme": "Dark 2026",
+
+    "workbench.sideBar.location": "right",
+
+    "editor.fontFamily": "'Maple Mono NF CN', 'Maple Mono', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": "'calt'",
+    "editor.fontSize": 18,
+    "editor.wordWrap": "on",
+
+    "terminal.integrated.fontFamily": "'Maple Mono NF CN', 'Maple Mono', Menlo, Monaco, monospace",
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontLigatures.enabled": true,
+
+    "editor.minimap.enabled": true,
+    "editor.minimap.autohide": "mouseover",
+    "editor.minimap.showSlider": "mouseover"
+}

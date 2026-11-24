@@ -1,0 +1,8 @@
+llvm-vs-code-extensions.lldb-dap@0.4.1
+ms-ceintl.vscode-language-pack-zh-hans@1.131.2026090407
+ms-vscode-remote.remote-ssh@0.128.0
+ms-vscode-remote.remote-ssh-edit@0.87.0
+ms-vscode.remote-explorer@0.5.0
+saoudrizwan.claude-dev@4.1.27
+swiftlang.swift-vscode@2.18.1
+vscode-icons-team.vscode-icons@13.0.0
