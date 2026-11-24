@@ -70,4 +70,4 @@ cd ~/macos-config
 
 ## 许可
 
-MIT（见 `LICENSE`）。第三方资源各自保留许可：Catppuccin 主题、cursor-shaders 着色器均为 MIT；Maple Mono 字体不随仓库分发（SIL OFL 1.1，请自行安装）。
+MIT（见 `LICENSE`）。第三方资源各自保留许可，清单见 `THIRD-PARTY.md`；Maple Mono 字体不随仓库分发（SIL OFL 1.1，请自行安装）。
