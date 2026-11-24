@@ -22,12 +22,24 @@
 ## 快速开始
 
 ```bash
-git clone <本仓库地址> ~/macos-config
+# 0) 前置：Homebrew（新机器才有这一步；已装可跳过）
+command -v brew >/dev/null || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(brew shellenv)"          # Apple Silicon 通常已自动写入 ~/.zprofile
+
+# 1) 拿仓库（HTTPS 即可，不需要配 SSH key）
+git clone https://github.com/oneviews/macos-config.git ~/macos-config
 cd ~/macos-config
 
-./scripts/secret-scan.sh     # 1. 先自检（离线、只读）
-./bootstrap.sh --dry         # 2. 看它准备做什么
-./bootstrap.sh               # 3. 执行（缺什么会提示，不会静默装）
+# 2) 自检 → 预览 → 执行
+./scripts/secret-scan.sh     # 离线、只读，确认没有密钥 / IP 泄漏
+./bootstrap.sh --dry         # 看它准备做什么，不改任何文件
+./bootstrap.sh               # 执行（缺什么只提示，不会静默安装）
+```
+
+想连 `~/.zshrc` 一起配好（会先备份）：
+
+```bash
+./bootstrap.sh --write-zshrc
 ```
 
 只想改一块：
