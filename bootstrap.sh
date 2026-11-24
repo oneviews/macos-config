@@ -5,17 +5,20 @@
 #   ./bootstrap.sh                检查后逐项应用（缺应用的会跳过并提示）
 #   ./bootstrap.sh --yes          不询问
 #   ./bootstrap.sh --write-zshrc  额外把 source 块追加到 ~/.zshrc（先备份）
+#   ./bootstrap.sh --no-git       不写 ~/.config/git/（机器上还有别的项目时用）
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DRY=0
 YES=0
 WRITE_ZSHRC=0
+NO_GIT=0
 for arg in "$@"; do
     case "${arg}" in
         --dry) DRY=1 ;;
         --yes|-y) YES=1 ;;
         --write-zshrc) WRITE_ZSHRC=1 ;;
+        --no-git) NO_GIT=1 ;;
         -h|--help) sed -n '2,9p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *) echo "❌ 未知参数: ${arg}" >&2; exit 2 ;;
     esac
@@ -55,7 +58,9 @@ run_step() {
 }
 
 # 1. git 全局配置（写 ~/.config/git/，不碰任何仓库；身份默认留空）
-if [[ ${DRY} -eq 1 ]]; then
+if [[ ${NO_GIT} -eq 1 ]]; then
+    echo "ℹ️  跳过 git 配置（--no-git）"
+elif [[ ${DRY} -eq 1 ]]; then
     run_step "git 配置" "${REPO}/git/git.sh" --dry
 else
     run_step "git 配置" "${REPO}/git/git.sh" apply

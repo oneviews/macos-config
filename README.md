@@ -42,6 +42,16 @@ cd ~/macos-config
 ./bootstrap.sh --write-zshrc
 ```
 
+⚠️ 这台机器上如果还有**不在 `~/project` 的**其它仓库，建议用 `--no-git`：
+
+```bash
+./bootstrap.sh --write-zshrc --no-git
+```
+
+因为 `git/` 那一步会写全局的 `~/.config/git/config`（含 `user.useConfigOnly = true`），
+不在 `~/project`、`~/Work` 下的仓库提交时会报错——这是有意的防呆，但对已有项目是打扰。
+撤销只需 `rm ~/.config/git/config`（不影响你的 `~/.gitconfig`）。
+
 只想改一块：
 
 ```bash
