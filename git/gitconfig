@@ -1,0 +1,45 @@
+# 全局 git 配置（由 git.sh 部署到 ~/.config/git/config）
+#
+# 逐目录身份靠 includeIf：这里只给 ~/project/ 配了身份。
+# 配合 [user] useConfigOnly = true，其他目录提交时会直接报错，
+# 而不是用「主机名 + 用户名」拼一个假邮箱写进历史。
+[user]
+    useConfigOnly = true
+
+[init]
+    defaultBranch = main
+
+[core]
+    excludesFile = ~/.config/git/ignore
+    quotepath = false
+    autocrlf = input
+
+[fetch]
+    prune = true
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+    default = simple
+
+[merge]
+    conflictstyle = zdiff3
+
+[diff]
+    colorMoved = default
+
+[rerere]
+    enabled = true
+
+[help]
+    autocorrect = prompt
+
+# 开发项目：统一用 GitHub 身份
+[includeIf "gitdir:~/project/"]
+    path = ~/.config/git/identity.project.gitconfig
+
+# 需要给别的目录单独一份身份时，照抄下面三行（去掉注释即可）：
+# [includeIf "gitdir:~/work/"]
+#     path = ~/.config/git/identity.work.gitconfig

@@ -54,7 +54,14 @@ run_step() {
     echo
 }
 
-# 1. VS Code（复制，不软链：VS Code 会原子重写 settings.json）
+# 1. git 全局配置（写 ~/.config/git/，不碰任何仓库；身份默认留空）
+if [[ ${DRY} -eq 1 ]]; then
+    run_step "git 配置" "${REPO}/git/git.sh" --dry
+else
+    run_step "git 配置" "${REPO}/git/git.sh" apply
+fi
+
+# 2. VS Code（复制，不软链：VS Code 会原子重写 settings.json）
 if have code; then
     if [[ ${DRY} -eq 1 ]]; then
         echo "· VS Code: 将执行 ${REPO}/vscode/sync.sh push（会先备份现有 settings.json）"
@@ -65,7 +72,7 @@ else
     echo "ℹ️  跳过 VS Code（没有 code 命令）"
 fi
 
-# 2. Ghostty（符号链接）
+# 3. Ghostty（符号链接）
 if [[ -d /Applications/Ghostty.app ]]; then
     if [[ ${DRY} -eq 1 ]]; then run_step "Ghostty" "${REPO}/ghostty/install.sh" --dry
     else run_step "Ghostty" "${REPO}/ghostty/install.sh"; fi
@@ -73,7 +80,7 @@ else
     echo "ℹ️  跳过 Ghostty（未安装）"
 fi
 
-# 3. Karabiner（按 description 合并）
+# 4. Karabiner（按 description 合并）
 if [[ -d /Applications/Karabiner-Elements.app ]]; then
     if [[ ${DRY} -eq 1 ]]; then run_step "Karabiner" "${REPO}/karabiner/install.sh" --dry
     else run_step "Karabiner" "${REPO}/karabiner/install.sh"; fi
@@ -81,11 +88,11 @@ else
     echo "ℹ️  跳过 Karabiner（未安装）"
 fi
 
-# 4. 系统偏好（需要可选的 sudo，脚本自己会说明）
+# 5. 系统偏好（需要可选的 sudo，脚本自己会说明）
 if [[ ${DRY} -eq 1 ]]; then run_step "macOS 偏好" "${REPO}/macos/settings.sh" diff
 else run_step "macOS 偏好" "${REPO}/macos/settings.sh" apply; fi
 
-# 5. zsh 片段：链接到 ~/.config/zsh，由 ~/.zshrc 的标记块 source
+# 6. zsh 片段：链接到 ~/.config/zsh，由 ~/.zshrc 的标记块 source
 ZSHDIR="${XDG_CONFIG_HOME:-${HOME}/.config}/zsh"
 if [[ ${DRY} -eq 1 ]]; then
     echo "· zsh: 将把 shell/{env,aliases,interactive}.zsh、cmds.sh、appearance.sh 链接到 ${ZSHDIR}"

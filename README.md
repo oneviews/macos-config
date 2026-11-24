@@ -49,6 +49,7 @@ cd ~/macos-config
 | `karabiner/` | 单条 complex modification（按 description 合并） | `./karabiner/install.sh [--dry]` |
 | `macos/` | Dock / Finder / 键盘 / 截图等系统偏好 | `./macos/settings.sh [list\|diff\|apply\|restore]` |
 | `shell/` | PATH 去重、经典别名、零插件交互增强、外观切换 | 由 `~/.zshrc` 的 `# >>> dotfiles` 块 source |
+| `git/` | 全局 git 配置：按目录分配身份（`includeIf`）+ 全局忽略 | `./git/git.sh` |
 | `scripts/` | 泄漏自检 | `./scripts/secret-scan.sh` |
 
 ## 设计取舍

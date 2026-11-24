@@ -1,0 +1,12 @@
+# ~/project 下的所有仓库（含公开仓库）使用这一份身份。
+#
+# 现在是有意留空的：配合 gitconfig 里的 user.useConfigOnly = true，
+# 任何提交都会明确失败并提示「请告诉我你是谁」，而不是用机器名拼一个邮箱写进公开历史。
+#
+# 填一次，全部项目生效：
+#   ./git/git.sh set-identity "你的名字" "12345678+你的用户名@users.noreply.github.com"
+#
+# 也可以手动编辑本文件后执行 ./git/git.sh apply。
+[user]
+    # name =
+    # email =
