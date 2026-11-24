@@ -49,7 +49,7 @@ cd ~/macos-config
 ```
 
 因为 `git/` 那一步会写全局的 `~/.config/git/config`（含 `user.useConfigOnly = true`），
-不在 `~/project`、`~/Work` 下的仓库提交时会报错——这是有意的防呆，但对已有项目是打扰。
+不在 `~/project` 下的仓库提交时会报错——这是有意的防呆，但对已有项目是打扰。
 撤销只需 `rm ~/.config/git/config`（不影响你的 `~/.gitconfig`）。
 
 只想改一块：
