@@ -57,11 +57,13 @@ status() {
     done
     echo
     echo "生效身份:"
-    for d in "${HOME}/project" "${HOME}/Work"; do
-        [[ -d "${d}" ]] || continue
-        printf '  %-28s %s\n' "${d/#${HOME}/\~}" "$(ident_of "${d}")"
+    local sample
+    sample="$(find "${HOME}/project" -maxdepth 2 -type d -name .git 2>/dev/null | head -1 | sed 's|/.git$||' || true)"
+    for d in "${sample}" "${HOME}/Work"; do
+        [[ -n "${d}" && -d "${d}" ]] || continue
+        printf '  %-34s %s\n' "${d/#${HOME}/~}" "$(ident_of "${d}")"
     done
-    printf '  %-28s %s\n' "/tmp（未命中 includeIf）" "$(ident_of /tmp)"
+    printf '  %-34s %s\n' "/tmp（未命中 includeIf）" "$(ident_of /tmp)"
     echo
     if [[ -f "${HOME}/.gitconfig" ]]; then
         echo "⚠️  检测到 ~/.gitconfig：它的优先级高于 XDG 配置，可能覆盖本配置"
