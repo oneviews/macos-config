@@ -12,7 +12,6 @@
 #
 # 数据来源（全部只读）：
 #   ~/.zshrc / shell/aliases.zsh       我们定义的别名
-#   shell/px.zsh                       我们定义的函数（px 及其子命令）
 #   brew list --formula / brew leaves  软件命令（leaves = 直接安装）
 #   brew info --json=v2 --installed    版本与描述（一次调用，约 0.5s）
 #   brew list --cask                   GUI 应用
@@ -154,8 +153,6 @@ px_subcommands() {
 
 print_funcs() {
     h2 "[我们定义的函数]"
-    printf '    %s%-14s%s %s\n' "$G" "px" "$N" "代理 / 外观 / DeepSeek 一行问答"
-    printf '      %-14s 子命令: %s\n' "" "$(px_subcommands)"
     printf '    %s%-14s%s %s\n' "$G" "cmds" "$N" "本命令：别名 / 函数 / 软件命令总览"
 }
 
