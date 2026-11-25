@@ -31,15 +31,22 @@ git clone https://github.com/oneviews/macos-config.git ~/macos-config
 cd ~/macos-config
 
 # 2) 自检 → 预览 → 执行
-./scripts/secret-scan.sh     # 离线、只读，确认没有密钥 / IP 泄漏
-./bootstrap.sh --dry         # 看它准备做什么，不改任何文件
-./bootstrap.sh               # 执行（缺什么只提示，不会静默安装）
+./scripts/secret-scan.sh              # 离线、只读，确认没有密钥 / IP 泄漏
+./bootstrap.sh --dry                  # 看它准备做什么，不改任何文件
+./bootstrap.sh --write-zshrc 2>&1 | tee ~/bootstrap.log   # 执行（含 .zshrc 接入，会先备份）
 ```
 
-想连 `~/.zshrc` 一起配好（会先备份）：
+`--write-zshrc` 会把 `# >>> dotfiles` 块追加到 `~/.zshrc`（先备份）；不加这个参数，
+别名 / `cmds` / 提示符都不会生效——脚本结尾会明确告诉你。
 
-```bash
-./bootstrap.sh --write-zshrc
+不想动 `.zshrc` 时，手动追加这三行 source 也一样：
+
+```zsh
+# >>> dotfiles
+source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/env.zsh"
+source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.zsh"
+source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/interactive.zsh"
+# <<< dotfiles
 ```
 
 ⚠️ 这台机器上如果还有**不在 `~/project` 的**其它仓库，建议用 `--no-git`：

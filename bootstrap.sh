@@ -116,8 +116,14 @@ source \"\${XDG_CONFIG_HOME:-\$HOME/.config}/zsh/interactive.zsh\"
 # <<< dotfiles"
 
 echo
-echo "请把下面这段放进 ~/.zshrc（没有重复添加就可以）:"
-printf '%s\n' "${BLOCK}" | sed 's/^/  /'
+if [[ -f "${HOME}/.zshrc" ]] && grep -q '# >>> dotfiles' "${HOME}/.zshrc"; then
+    echo "✅ ~/.zshrc 已包含 # >>> dotfiles 块"
+else
+    echo "⚠️  你的 ~/.zshrc 还没有 # >>> dotfiles 块 —— 别名、快捷键、cmds 都不会生效。"
+    echo "    自动写入（会先备份）：./bootstrap.sh --write-zshrc"
+    echo "    或手动把下面这段追加到 ~/.zshrc："
+    printf '%s\n' "${BLOCK}" | sed 's/^/      /'
+fi
 
 if [[ ${WRITE_ZSHRC} -eq 1 && ${DRY} -eq 0 ]]; then
     RC="${HOME}/.zshrc"
