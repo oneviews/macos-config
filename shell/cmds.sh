@@ -12,6 +12,7 @@
 #
 # 数据来源（全部只读）：
 #   ~/.zshrc / shell/aliases.zsh       我们定义的别名
+#   shell/px.zsh                       我们定义的函数（px：外观 / DeepSeek 问答）
 #   brew list --formula / brew leaves  软件命令（leaves = 直接安装）
 #   brew info --json=v2 --installed    版本与描述（一次调用，约 0.5s）
 #   brew list --cask                   GUI 应用
@@ -137,22 +138,9 @@ print_aliases() {
 }
 
 # ---------- 2) 我们定义的函数 ----------
-px_subcommands() {
-    if [ ! -f "$PX" ]; then
-        return 0
-    fi
-    sed -n '/^px()/,/^}/p' "$PX" \
-        | grep -E '^[[:space:]]+[a-zA-Z*|_-]+\)' \
-        | sed -E 's/^[[:space:]]+//; s/\).*$//' \
-        | tr '|' '\n' \
-        | grep -v '^\*$' \
-        | awk '!seen[$0]++' \
-        | paste -sd ',' - \
-        | sed 's/,/, /g' || true
-}
-
 print_funcs() {
     h2 "[我们定义的函数]"
+    printf '    %s%-14s%s %s\n' "$G" "px" "$N" "外观切换 + DeepSeek 问答（代理部分不含）"
     printf '    %s%-14s%s %s\n' "$G" "cmds" "$N" "本命令：别名 / 函数 / 软件命令总览"
 }
 

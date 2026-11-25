@@ -100,3 +100,12 @@ if (( WORK_PROMPT )); then
     # 回车后立刻擦掉右侧 git 分支，避免滚动时残留半行
     setopt TRANSIENT_RPROMPT
 fi
+
+# --- 公开版：cmds 走仓库内路径，不依赖 ~/.config/zsh 是否已建链接 ---
+_CFG_SHELL_DIR=${0:A:h}
+cmds() { "$_CFG_SHELL_DIR/cmds.sh" "$@"; }
+
+# --- 公开版：px 入口（代理部分不在本仓库，见 px help）---
+if [[ -f "${0:A:h}/px.zsh" ]]; then
+    source "${0:A:h}/px.zsh"
+fi
