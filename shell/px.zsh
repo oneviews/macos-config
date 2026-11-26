@@ -51,7 +51,8 @@ _px_term_cfg() {
 
 # 只影响新开的窗口：命令行覆盖 theme，不动配置、不动系统外观
 _px_term_open() {
-    local theme="$1"
+    local theme
+    theme="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
     [[ -d /Applications/Ghostty.app ]] || { echo "❌ 未安装 Ghostty（brew install --cask ghostty）" >&2; return 1; }
     open -na Ghostty.app --args --theme="$theme" || return 1
     echo "✅ 已用「$theme」打开新窗口（其它窗口与系统外观不变）"
@@ -59,7 +60,8 @@ _px_term_open() {
 
 # 写进配置：改 theme 这一行（没有就追加），先备份，写完读回
 _px_term_write() {
-    local value="$1" dry="${2:-0}" cfg tmp
+    local value dry="${2:-0}" cfg tmp
+    value="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
     cfg="$(_px_term_cfg)"
     [[ -f "$cfg" ]] || { echo "❌ 找不到 Ghostty 配置: $cfg" >&2; return 1; }
     if [[ "$dry" == 1 ]]; then
