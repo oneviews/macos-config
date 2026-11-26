@@ -89,7 +89,7 @@ _px_term() {
         now|status)
             echo "配置: $cfg"
             grep -m1 '^theme' "$cfg" 2>/dev/null || echo "theme = （未设置，使用默认配色）"
-            echo "系统外观: $("$_PX_DIR/appearance.sh" status 2>/dev/null | head -1)"
+            echo "系统外观: $("$_PX_DIR/appearance.sh" status 2>/dev/null | head -1 | sed 's/^当前外观: //')"
             ;;
         ls|list)
             shift
