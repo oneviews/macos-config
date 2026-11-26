@@ -49,6 +49,22 @@ _px_term_cfg() {
     echo "${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config"
 }
 
+# 规范化：支持 light:X,dark:Y；逐段去掉 (resources)/(user) 与多余空格
+_px_term_normalize() {
+    local raw="$1" out="" part pre
+    for part in ${(s:,:)raw}; do
+        part="$(printf '%s' "$part" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+        pre=""
+        case "$part" in
+            light:*) pre="light:"; part="${part#light:}" ;;
+            dark:*)  pre="dark:";  part="${part#dark:}" ;;
+        esac
+        part="$(printf '%s' "$part" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s/[[:space:]]+\((resources|user)\)$//; s/[[:space:]]+$//')"
+        out="${out:+$out,}${pre}${part}"
+    done
+    printf '%s' "$out"
+}
+
 # 可用主题名（去掉 list-themes 的 "(resources)"/"(user)" 标记）
 _px_term_names() {
     local bin
@@ -76,7 +92,7 @@ _px_term_validate() {
 # 只影响新开的窗口：命令行覆盖 theme，不动配置、不动系统外观
 _px_term_open() {
     local theme
-    theme="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
+    theme="$(_px_term_normalize "$1")"   # 允许直接粘贴 list-themes 的输出（含成对写法）
     _px_term_validate "$theme" || return 1
     [[ -d /Applications/Ghostty.app ]] || { echo "❌ 未安装 Ghostty（brew install --cask ghostty）" >&2; return 1; }
     open -na Ghostty.app --args --theme="$theme" || return 1
@@ -86,7 +102,7 @@ _px_term_open() {
 # 写进配置：改 theme 这一行（没有就追加），先备份，写完读回
 _px_term_write() {
     local value dry="${2:-0}" cfg tmp
-    value="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
+    value="$(_px_term_normalize "$1")"   # 允许直接粘贴 list-themes 的输出（含成对写法）
     _px_term_validate "$value" || return 1
     cfg="$(_px_term_cfg)"
     [[ -f "$cfg" ]] || { echo "❌ 找不到 Ghostty 配置: $cfg" >&2; return 1; }
