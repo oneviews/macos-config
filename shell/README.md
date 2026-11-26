@@ -9,7 +9,7 @@
 | `interactive.zsh` | 历史搜索、`Ctrl+X h` 查 man、`Ctrl+X Ctrl+E` 编辑整行、`Ctrl+X a` 展开别名、`cmds` 总览、零插件提示符 |
 | `appearance.sh` | `status\|light\|dark\|toggle` 切换系统外观（VS Code / Ghostty 自动跟随） |
 | `cmds.sh` | `cmds` 子命令：列别名 / 函数 / 已装软件命令 |
-| `px.zsh` | 快捷入口：`px dark\|light\|tog\|app`、`px ds`（代理子命令只提示不可用） |
+| `px.zsh` | 快捷入口：`px dark\|light\|tog\|app`、`px term`、`px ds`（代理子命令只提示不可用） |
 
 ## px 快捷入口
 
@@ -17,8 +17,24 @@
 | --- | --- |
 | `px dark` / `px light` / `px tog` | 切换系统外观（VS Code / Ghostty 自动跟随） |
 | `px app` | 当前外观 + 各应用跟随情况 |
+| `px term` … | 终端主题，见下一节 |
 | `px ds "问题"` | DeepSeek 一行问答（需 `DEEPSEEK_API_KEY` 或钥匙串 `deepseek-api`） |
 | `px help` | 帮助 |
+
+### 终端主题（Ghostty）
+
+| 命令 | 作用 |
+| --- | --- |
+| `px term` / `px term now` | 看配置里的 `theme` + 当前系统外观 |
+| `px term ls [关键字]` | 搜内置主题（820 个） |
+| `px term dark` / `px term light` | 用深/浅色主题**开一个新窗口**（不改配置、不动系统） |
+| `px term open <主题名>` | 用指定主题开新窗口 |
+| `px term set <主题名> [--dry]` | 写入 `~/.config/ghostty/config`（长期固定，按 `Cmd+Shift+,` 生效） |
+| `px term follow [--dry]` | 恢复 `light:…,dark:…` 成对、跟随系统 |
+
+默认深浅主题可用 `PX_TERM_DARK` / `PX_TERM_LIGHT` 覆盖；主题名带空格要加引号。
+`px term dark` 走的是 `open -na Ghostty.app --args --theme=…`——**macOS 上不能用 CLI 直接启动终端**，
+所以「只换新窗口」只能这样开；要改当前窗口就 `px term set` + 按 `Cmd+Shift+,` 重载。
 
 `px on` / `off` / `st` / `sys` / `k` / `socks` / `key` 属于**代理控制，不在本仓库内**：
 它们依赖你自己的节点凭证与代理启动脚本。执行时会明确提示，不会静默失败。

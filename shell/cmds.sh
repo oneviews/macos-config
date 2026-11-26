@@ -140,7 +140,7 @@ print_aliases() {
 # ---------- 2) 我们定义的函数 ----------
 print_funcs() {
     h2 "[我们定义的函数]"
-    printf '    %s%-14s%s %s\n' "$G" "px" "$N" "外观切换 + DeepSeek 问答（代理部分不含）"
+    printf '    %s%-14s%s %s\n' "$G" "px" "$N" "外观 + 终端主题 + DeepSeek 问答（代理部分不含）"
     printf '    %s%-14s%s %s\n' "$G" "cmds" "$N" "本命令：别名 / 函数 / 软件命令总览"
 }
 
