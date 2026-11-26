@@ -22,8 +22,9 @@ _px_usage() {
   term [子命令]                 终端主题（Ghostty），只影响终端：
      now | status               看配置里当前的 theme
      ls [关键字]                搜内置主题
-     dark | light               用深/浅色主题开一个新窗口
-     open <主题名>              用指定主题开一个新窗口
+     dark | light               用深/浅色主题开一个预览窗口
+     open <主题名>              用指定主题开预览窗口
+     close                      关掉所有预览窗口（不影响普通窗口）
      set <主题名> [--dry]       写入配置（长期固定，按 Cmd+Shift+, 生效）
      follow [--dry]             恢复 light/dark 成对、跟随系统
   ds <问题>                     DeepSeek 一行问答（--pro / --think / --dry，或 ds status）
@@ -96,7 +97,7 @@ _px_term_open() {
     _px_term_validate "$theme" || return 1
     [[ -d /Applications/Ghostty.app ]] || { echo "❌ 未安装 Ghostty（brew install --cask ghostty）" >&2; return 1; }
     open -na Ghostty.app --args --theme="$theme" || return 1
-    echo "✅ 已用「$theme」打开新窗口（其它窗口与系统外观不变）"
+    echo "✅ 已用「$theme」打开预览窗口（该实例强制此主题、不跟随系统；看完用 Cmd+Q 或 px term close）"
 }
 
 # 写进配置：改 theme 这一行（没有就追加），先备份，写完读回
@@ -146,6 +147,16 @@ _px_term() {
             ;;
         dark)  _px_term_open "$dark" ;;
         light) _px_term_open "$light" ;;
+        close)
+            local n
+            n="$(pgrep -f 'Ghostty.app/Contents/MacOS/ghostty --theme=' | wc -l | tr -d ' ')"
+            if [[ "$n" == 0 ]]; then
+                echo "ℹ️  没有主题预览实例（普通窗口不受影响）"
+                return 0
+            fi
+            pkill -f 'Ghostty.app/Contents/MacOS/ghostty --theme=' || true
+            echo "✅ 已关闭 ${n} 个主题预览实例；普通窗口保持不动"
+            ;;
         open)
             shift
             [[ -n "${1:-}" ]] || { echo "用法: px term open <主题名>" >&2; return 1; }

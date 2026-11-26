@@ -27,8 +27,9 @@
 | --- | --- |
 | `px term` / `px term now` | 看配置里的 `theme` + 当前系统外观 |
 | `px term ls [关键字]` | 搜内置主题（820 个） |
-| `px term dark` / `px term light` | 用深/浅色主题**开一个新窗口**（不改配置、不动系统） |
-| `px term open <主题名>` | 用指定主题开新窗口 |
+| `px term dark` / `px term light` | 用深/浅色主题**开一个预览窗口**（独立实例，强制该主题、不跟随系统） |
+| `px term open <主题名>` | 用指定主题开预览窗口 |
+| `px term close` | 关掉所有预览窗口（普通窗口不动） |
 | `px term set <主题名> [--dry]` | 写入 `~/.config/ghostty/config`（长期固定，按 `Cmd+Shift+,` 生效） |
 | `px term follow [--dry]` | 恢复 `light:…,dark:…` 成对、跟随系统 |
 
