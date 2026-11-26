@@ -34,6 +34,7 @@
 
 默认深浅主题可用 `PX_TERM_DARK` / `PX_TERM_LIGHT` 覆盖；主题名带空格要加引号。
 `px term ls` 输出末尾的 `(resources)` 只是来源标记，**不是主题名的一部分**；整行粘进去也行，px 会自动去掉。
+`set` 写入前会校验主题名（不存在就列候选并拒绝），并**删除其它重复的 `theme` 行**，只保留一条。
 `px term dark` 走的是 `open -na Ghostty.app --args --theme=…`——**macOS 上不能用 CLI 直接启动终端**，
 所以「只换新窗口」只能这样开；要改当前窗口就 `px term set` + 按 `Cmd+Shift+,` 重载。
 

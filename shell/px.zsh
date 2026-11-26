@@ -49,10 +49,35 @@ _px_term_cfg() {
     echo "${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config"
 }
 
+# 可用主题名（去掉 list-themes 的 "(resources)"/"(user)" 标记）
+_px_term_names() {
+    local bin
+    bin="$(_px_ghostty_bin)" || return 1
+    "$bin" +list-themes 2>/dev/null | sed -E 's/ \((resources|user)\)$//'
+}
+
+# 校验主题名（支持 light:X,dark:Y 成对写法）；不存在就列候选并返回 1
+_px_term_validate() {
+    local value="$1" names part name
+    names="$(_px_term_names)" || return 0      # 拿不到清单就跳过校验
+    local bad=0
+    for part in ${(s:,:)value}; do
+        name="${${part#light:}#dark:}"
+        [[ -z "$name" ]] && continue
+        if ! printf '%s\n' "$names" | grep -qxF -- "$name"; then
+            echo "❌ 主题不存在: $name" >&2
+            printf '%s\n' "$names" | grep -iF -- "${name%% *}" | head -5 | sed 's/^/   候选: /' >&2
+            bad=1
+        fi
+    done
+    return "$bad"
+}
+
 # 只影响新开的窗口：命令行覆盖 theme，不动配置、不动系统外观
 _px_term_open() {
     local theme
     theme="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
+    _px_term_validate "$theme" || return 1
     [[ -d /Applications/Ghostty.app ]] || { echo "❌ 未安装 Ghostty（brew install --cask ghostty）" >&2; return 1; }
     open -na Ghostty.app --args --theme="$theme" || return 1
     echo "✅ 已用「$theme」打开新窗口（其它窗口与系统外观不变）"
@@ -62,15 +87,20 @@ _px_term_open() {
 _px_term_write() {
     local value dry="${2:-0}" cfg tmp
     value="$(printf '%s' "$1" | sed -E 's/ \((resources|user)\)$//')"   # 允许直接粘贴 list-themes 的输出
+    _px_term_validate "$value" || return 1
     cfg="$(_px_term_cfg)"
     [[ -f "$cfg" ]] || { echo "❌ 找不到 Ghostty 配置: $cfg" >&2; return 1; }
     if [[ "$dry" == 1 ]]; then
         echo "· 将把 $cfg 的 theme 改为: $value"
+        echo "  （会删掉其它重复的 theme 行，改动前先备份）"
         return 0
     fi
     tmp="$(mktemp)"
     awk -v t="$value" '
-        /^[[:space:]]*theme[[:space:]]*=/ && !done { print "theme = " t; done = 1; next }
+        /^[[:space:]]*theme[[:space:]]*=/ {
+            if (!done) { print "theme = " t; done = 1 }
+            next
+        }
         { print }
         END { if (!done) print "theme = " t }
     ' "$cfg" > "$tmp" || { rm -f "$tmp"; return 1; }
